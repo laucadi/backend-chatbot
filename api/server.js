@@ -1,11 +1,11 @@
-import express, { json } from "express";
-import "dotenv/config";
-import cors from "cors";
+const express = require("express");
+require("dotenv").config();
+const cors = require("cors");
 
 const PORT = 8000;
 const app = express();
 
-app.use(json());
+app.use(express.json());
 app.use(cors());
 const API_KEY = process.env.API_KEY;
 
@@ -22,7 +22,7 @@ app.post("/completions", async (req, res) => {
       max_tokens: 100,
     }),
   };
-  console.log(req);
+
   try {
     const response = await fetch(
       "https://api.openai.com/v1/chat/completions",
@@ -30,8 +30,9 @@ app.post("/completions", async (req, res) => {
     );
     const data = await response.json();
     res.send(data);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error en la solicitud a OpenAI");
   }
 });
 
