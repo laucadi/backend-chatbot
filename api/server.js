@@ -1,13 +1,18 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 const API_KEY = process.env.API_KEY;
+const IP = process.env.IP || "0.0.0.0";
 
 app.post("/completions", async (req, res) => {
   const options = {
@@ -35,7 +40,10 @@ app.post("/completions", async (req, res) => {
     res.status(500).send("Error en la solicitud a OpenAI");
   }
 });
+app.get("/", (req, res) => {
+  res.send("¡Hola, mundo! Este es un mensaje enviado desde el servidor.");
+});
 
-app.listen(PORT, () => console.log("YOUR SERVER IS RUNNING ON PORT" + PORT));
-
-console.log("hola ya entre");
+app.listen(PORT, IP, () =>
+  console.log("YOUR SERVER IS RUNNING ON PORT" + PORT)
+);
